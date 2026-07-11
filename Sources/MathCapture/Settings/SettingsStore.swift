@@ -72,7 +72,7 @@ enum SettingsStore {
 
     // MARK: - API Key (per-provider)
 
-    static func saveAPIKey(_ key: String, for provider: InferenceProvider) {
+    static func saveAPIKey(_ key: String, for provider: InferenceProvider) throws {
         guard let data = key.data(using: .utf8) else { return }
         deleteAPIKey(for: provider)
 
@@ -84,7 +84,10 @@ enum SettingsStore {
             kSecAttrAccessible as String: kSecAttrAccessibleAfterFirstUnlock,
         ]
 
-        SecItemAdd(query as CFDictionary, nil)
+        let status = SecItemAdd(query as CFDictionary, nil)
+        guard status == errSecSuccess else {
+            throw KeychainError.saveFailed(status)
+        }
     }
 
     static func getAPIKey(for provider: InferenceProvider) -> String? {
@@ -96,7 +99,7 @@ enum SettingsStore {
 
         // Migration from old single-key storage
         if provider == .google, let oldKey = readKeychain(account: oldAPIKeyAccount) {
-            saveAPIKey(oldKey, for: .google)
+            try? saveAPIKey(oldKey, for: .google)
             deleteKeychain(account: oldAPIKeyAccount)
             return oldKey
         }
@@ -129,6 +132,17 @@ enum SettingsStore {
         }
 
         return String(data: data, encoding: .utf8)
+    }
+
+    enum KeychainError: LocalizedError {
+        case saveFailed(OSStatus)
+
+        var errorDescription: String? {
+            switch self {
+            case .saveFailed(let status):
+                return "Failed to save API key to Keychain (error \(status))."
+            }
+        }
     }
 
     private static func deleteKeychain(account: String) {

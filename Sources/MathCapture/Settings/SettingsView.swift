@@ -49,7 +49,12 @@ struct SettingsView: View {
 
                 HStack(spacing: 8) {
                     Button("Save") {
-                        SettingsStore.saveAPIKey(apiKey, for: selectedProvider)
+                        do {
+                            try SettingsStore.saveAPIKey(apiKey, for: selectedProvider)
+                            testStatus = .success
+                        } catch {
+                            testStatus = .failure(error.localizedDescription)
+                        }
                     }
 
                     Button(selectedProvider == .apfel ? "Test Connection" : "Test API") {

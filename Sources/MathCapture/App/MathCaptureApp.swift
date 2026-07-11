@@ -34,12 +34,7 @@ struct MathCaptureApp: App {
                     Button {
                         SettingsStore.saveProvider(provider)
                     } label: {
-                        HStack {
-                            Text(provider.displayName)
-                            if provider == SettingsStore.getProvider() {
-                                Image(systemName: "checkmark")
-                            }
-                        }
+                        Text((provider == SettingsStore.getProvider() ? "✓ " : "") + provider.displayName)
                     }
                 }
             }
@@ -51,12 +46,7 @@ struct MathCaptureApp: App {
                     Button {
                         SettingsStore.saveModel(model, for: currentProvider)
                     } label: {
-                        HStack {
-                            Text(model)
-                            if model == currentModel {
-                                Image(systemName: "checkmark")
-                            }
-                        }
+                        Text((model == currentModel ? "✓ " : "") + model)
                     }
                 }
             }
@@ -67,12 +57,7 @@ struct MathCaptureApp: App {
                     Button {
                         SettingsStore.saveFormat(format)
                     } label: {
-                        HStack {
-                            Text(format.displayName)
-                            if format == currentFormat {
-                                Image(systemName: "checkmark")
-                            }
-                        }
+                        Text((format == currentFormat ? "✓ " : "") + format.displayName)
                     }
                 }
             }
