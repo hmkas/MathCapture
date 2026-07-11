@@ -3,6 +3,7 @@ import KeyboardShortcuts
 
 @main
 struct MathCaptureApp: App {
+    @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
     @Environment(\.openWindow) private var openWindow
 
     init() {
@@ -83,6 +84,13 @@ struct MathCaptureApp: App {
             }
         }
 
+        Window("Welcome", id: "setup") {
+            SetupView()
+                .fixedSize()
+        }
+        .windowResizability(.contentSize)
+        .windowStyle(.hiddenTitleBar)
+
         Window("MathCapture Settings", id: "settings") {
             SettingsView()
                 .frame(minWidth: 420)
@@ -93,6 +101,25 @@ struct MathCaptureApp: App {
         Window("Recent Captures", id: "history") {
             CaptureHistoryView()
         }
+    }
+}
+
+class AppDelegate: NSObject, NSApplicationDelegate {
+    func applicationDidFinishLaunching(_ notification: Notification) {
+        guard !UserDefaults.standard.bool(forKey: "setupComplete") else { return }
+
+        var attempts = 0
+        let timer = Timer.scheduledTimer(withTimeInterval: 0.2, repeats: true) { timer in
+            attempts += 1
+            guard attempts < 20 else { timer.invalidate(); return }
+
+            if let window = NSApp.windows.first(where: { $0.identifier?.rawValue == "setup" }) {
+                window.makeKeyAndOrderFront(nil)
+                NSApp.activate(ignoringOtherApps: true)
+                timer.invalidate()
+            }
+        }
+        timer.fire()
     }
 }
 

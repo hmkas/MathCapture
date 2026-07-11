@@ -150,6 +150,10 @@ actor InferenceService {
     }
 
     private func apfelBinary() throws -> URL {
+        try Self.findApfelBinary()
+    }
+
+    static func findApfelBinary() throws -> URL {
         let candidates = [
             "/opt/homebrew/bin/apfel",
             "/usr/local/bin/apfel",
@@ -173,6 +177,10 @@ actor InferenceService {
             return URL(fileURLWithPath: path)
         }
         throw MathError.serverError("apfel not found. Install with: brew install apfel")
+    }
+
+    static var isApfelInstalled: Bool {
+        (try? findApfelBinary()) != nil
     }
 
     private func encodeImage(_ image: CGImage) throws -> String {
