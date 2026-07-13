@@ -30,7 +30,7 @@ final class CaptureHistory: ObservableObject {
     nonisolated private static let historyFile = "history.json"
 
     nonisolated private static var storageDir: URL? {
-        try? FileManager.default.url(for: .cachesDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
+        try? FileManager.default.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
             .appendingPathComponent("com.maarten.mathcapture")
     }
 

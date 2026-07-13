@@ -200,8 +200,8 @@ actor InferenceService {
             }
             parts.append(Part(text: text))
             let body = GeminiRequest(contents: [Content(parts: parts)])
-            let url = URL(string: "https://generativelanguage.googleapis.com/v1beta/models/\(model):generateContent?key=\(apiKey)")!
-            return (url, try JSONEncoder().encode(body), [:])
+            let url = URL(string: "https://generativelanguage.googleapis.com/v1beta/models/\(model):generateContent")!
+            return (url, try JSONEncoder().encode(body), ["x-goog-api-key": apiKey])
 
         case .openAI:
             var content: [OpenAIContent] = []
