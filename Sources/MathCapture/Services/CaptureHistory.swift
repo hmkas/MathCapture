@@ -85,6 +85,12 @@ final class CaptureHistory: ObservableObject {
         save()
     }
 
+    func delete(_ entry: CaptureEntry) {
+        deleteImage(for: entry)
+        entries.removeAll { $0.id == entry.id }
+        save()
+    }
+
     private func saveImage(_ image: CGImage, id: String) -> String? {
         guard let dir = Self.imagesDir else { return nil }
         try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)

@@ -25,20 +25,27 @@ struct SetupView: View {
 
     var body: some View {
         VStack(spacing: 24) {
-            Image(systemName: "x.squareroot")
-                .font(.system(size: 40))
-                .foregroundColor(.accentColor)
+            VStack(spacing: 8) {
+                Image(systemName: "x.squareroot")
+                    .font(.system(size: 44, weight: .medium))
+                    .foregroundStyle(.linearGradient(
+                        colors: [.accentColor, .purple],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    ))
+                    .symbolRenderingMode(.hierarchical)
 
-            Text("Welcome to MathCapture")
-                .font(.title2)
-                .fontWeight(.semibold)
+                Text("Welcome to MathCapture")
+                    .font(.title2.weight(.semibold))
+            }
 
             Text("Capture math formulas from your screen and copy the result as LaTeX or MathML.")
                 .multilineTextAlignment(.center)
                 .foregroundColor(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
+                .padding(.horizontal, 8)
 
-            VStack(spacing: 12) {
+            VStack(spacing: 10) {
                 HStack(spacing: 10) {
                     Image(systemName: "apple.terminal")
                         .font(.title3)
@@ -71,10 +78,11 @@ struct SetupView: View {
                     Image(systemName: apfelIcon)
                         .foregroundColor(apfelColor)
                         .font(.title3)
+                        .symbolRenderingMode(.hierarchical)
                 }
                 .padding(12)
                 .background(Color(.textBackgroundColor))
-                .cornerRadius(8)
+                .clipShape(RoundedRectangle(cornerRadius: 10))
 
                 if #available(macOS 15, *) {
                     ScreenRecordingRow()
@@ -89,9 +97,12 @@ struct SetupView: View {
                 }
             }
 
-            VStack(spacing: 8) {
-                Button("Get Started") {
+            VStack(spacing: 6) {
+                Button {
                     completeSetup()
+                } label: {
+                    Label("Get Started", systemImage: "arrow.right.circle.fill")
+                        .labelStyle(.titleAndIcon)
                 }
                 .buttonStyle(.borderedProminent)
                 .controlSize(.large)
@@ -106,12 +117,13 @@ struct SetupView: View {
                 }
             }
 
-            Text("You can always switch providers in Settings")
+            Label("You can always switch providers in Settings", systemImage: "gearshape")
                 .font(.caption)
                 .foregroundColor(.secondary)
+                .labelStyle(.titleOnly)
         }
         .padding(24)
-        .frame(width: 420)
+        .frame(width: 440)
         .fixedSize()
         .onAppear(perform: checkApfel)
     }
@@ -215,10 +227,11 @@ struct SetupView: View {
             Image(systemName: statusIcon)
                 .foregroundColor(statusColor)
                 .font(.title3)
+                .symbolRenderingMode(.hierarchical)
         }
         .padding(12)
         .background(Color(.textBackgroundColor))
-        .cornerRadius(8)
+        .clipShape(RoundedRectangle(cornerRadius: 10))
     }
 }
 
@@ -257,7 +270,7 @@ private struct ScreenRecordingRow: View {
         }
         .padding(12)
         .background(Color(.textBackgroundColor))
-        .cornerRadius(8)
+        .clipShape(RoundedRectangle(cornerRadius: 10))
         .onAppear {
             isGranted = CGPreflightScreenCaptureAccess()
         }

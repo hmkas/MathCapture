@@ -17,10 +17,11 @@ struct SettingsView: View {
 
     var body: some View {
         Form {
-            Section("Inference Provider") {
+            Section {
                 Picker("Provider", selection: $selectedProvider) {
                     ForEach(InferenceProvider.allCases, id: \.self) { provider in
-                        Text(provider.displayName).tag(provider)
+                        Label(provider.displayName, systemImage: provider.iconName)
+                            .tag(provider)
                     }
                 }
                 .pickerStyle(.menu)
@@ -35,32 +36,44 @@ struct SettingsView: View {
                 }
                 .pickerStyle(.menu)
                 .disabled(testStatus == .testing)
+            } header: {
+                Label("Inference Provider", systemImage: "server.rack")
             }
 
-            Section(selectedProvider.apiKeyLabel) {
+            Section {
                 if selectedProvider == .apfel {
-                    Text("Apfel runs on-device. No API key required unless the server was started with --token.")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
+                    Label {
+                        Text("Apfel runs on-device. No API key required unless the server was started with --token.")
+                    } icon: {
+                        Image(systemName: "info.circle")
+                    }
+                    .font(.caption)
+                    .foregroundColor(.secondary)
                 }
 
                 SecureField("API Key", text: $apiKey)
                     .textFieldStyle(.roundedBorder)
 
                 HStack(spacing: 8) {
-                    Button("Save") {
+                    Button {
                         do {
                             try SettingsStore.saveAPIKey(apiKey, for: selectedProvider)
                             testStatus = .success
                         } catch {
                             testStatus = .failure(error.localizedDescription)
                         }
+                    } label: {
+                        Label("Save", systemImage: "checkmark")
                     }
 
-                    Button(selectedProvider == .apfel ? "Test Connection" : "Test API") {
+                    Button {
                         testAPI()
+                    } label: {
+                        Label(selectedProvider == .apfel ? "Test Connection" : "Test API", systemImage: "bolt")
                     }
                     .disabled(selectedProvider != .apfel && (apiKey.isEmpty || testStatus == .testing))
+
+                    Spacer()
 
                     switch testStatus {
                     case .idle:
@@ -69,38 +82,45 @@ struct SettingsView: View {
                         ProgressView()
                             .scaleEffect(0.7)
                     case .success:
-                        Image(systemName: "checkmark.circle.fill")
+                        Label("OK", systemImage: "checkmark.circle.fill")
                             .foregroundColor(.green)
-                            .help("API key werkt")
+                            .font(.caption)
                     case .failure(let msg):
-                        Image(systemName: "xmark.circle.fill")
-                            .foregroundColor(.red)
-                        Text(msg)
+                        Label(msg, systemImage: "xmark.circle.fill")
                             .foregroundColor(.red)
                             .font(.caption)
+                            .lineLimit(2)
+                            .truncationMode(.tail)
                     }
                 }
+            } header: {
+                Label(selectedProvider.apiKeyLabel, systemImage: selectedProvider.iconName)
             }
 
-            Section("Shortcut") {
+            Section {
                 KeyboardShortcuts.Recorder("Capture Formula:", name: .captureFormula)
                     .labelsHidden()
 
-                Text("Default: ⌘⌥M")
+                Label("Default: ⌘⌥M", systemImage: "keyboard")
                     .font(.caption)
                     .foregroundColor(.secondary)
+            } header: {
+                Label("Shortcut", systemImage: "command")
             }
 
-            Section("Output Format") {
+            Section {
                 Picker("Format", selection: $selectedFormat) {
                     ForEach(OutputFormat.allCases, id: \.self) { format in
-                        Text(format.displayName).tag(format)
+                        Label(format.displayName, systemImage: format.iconName)
+                            .tag(format)
                     }
                 }
                 .pickerStyle(.menu)
                 .onChange(of: selectedFormat) { _, newFormat in
                     SettingsStore.saveFormat(newFormat)
                 }
+            } header: {
+                Label("Output Format", systemImage: "doc.text")
             }
         }
         .formStyle(.grouped)

@@ -38,4 +38,14 @@ enum InferenceProvider: String, CaseIterable, Codable {
         case .gitHub: return "GitHub Token"
         }
     }
+
+    var iconName: String {
+        switch self {
+        case .apfel: return "apple.logo"
+        case .google: return "globe"
+        case .openAI: return "brain"
+        case .anthropic: return "a.circle"
+        case .gitHub: return "chevron.left.forwardslash.chevron.right"
+        }
+    }
 }

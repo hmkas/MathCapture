@@ -20,6 +20,13 @@ enum OutputFormat: String, CaseIterable, Codable {
         case .latex: return "LaTeX copied!"
         }
     }
+
+    var iconName: String {
+        switch self {
+        case .mathML: return "function"
+        case .latex: return "textformat"
+        }
+    }
 }
 
 enum SettingsStore {

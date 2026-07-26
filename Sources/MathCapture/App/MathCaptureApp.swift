@@ -17,70 +17,97 @@ struct MathCaptureApp: App {
     var body: some Scene {
         MenuBarExtra("MathCapture", systemImage: "x.squareroot") {
             if let error = CaptureManager.shared.lastError {
-                Text("⚠ " + error)
+                Label(error, systemImage: "exclamationmark.triangle")
                     .font(.caption)
                     .foregroundColor(.red)
                     .frame(maxWidth: 250)
                 Divider()
             }
 
-            Button("Capture Formula") {
+            Button {
                 CaptureManager.shared.startCapture()
+            } label: {
+                Label("Capture Formula", systemImage: "camera.viewfinder")
             }
 
             Divider()
 
-            Menu("Provider: \(SettingsStore.getProvider().displayName)") {
+            Menu {
                 ForEach(InferenceProvider.allCases, id: \.self) { provider in
                     Button {
                         SettingsStore.saveProvider(provider)
                     } label: {
-                        Text((provider == SettingsStore.getProvider() ? "✓ " : "") + provider.displayName)
+                        let isSelected = provider == SettingsStore.getProvider()
+                        HStack {
+                            if isSelected {
+                                Image(systemName: "checkmark")
+                            }
+                            Label(provider.displayName, systemImage: provider.iconName)
+                        }
                     }
                 }
+            } label: {
+                Label("Provider: \(SettingsStore.getProvider().displayName)", systemImage: "server.rack")
             }
 
             let currentProvider = SettingsStore.getProvider()
             let currentModel = SettingsStore.getModel(for: currentProvider)
-            Menu("Model: \(currentModel)") {
+            Menu {
                 ForEach(currentProvider.models, id: \.self) { model in
                     Button {
                         SettingsStore.saveModel(model, for: currentProvider)
                     } label: {
-                        Text((model == currentModel ? "✓ " : "") + model)
+                        let isSelected = model == currentModel
+                        Text((isSelected ? "✓ " : "") + model)
                     }
                 }
+            } label: {
+                Label("Model: \(currentModel)", systemImage: "cpu")
             }
 
             let currentFormat = SettingsStore.getFormat()
-            Menu("Format: \(currentFormat.displayName)") {
+            Menu {
                 ForEach(OutputFormat.allCases, id: \.self) { format in
                     Button {
                         SettingsStore.saveFormat(format)
                     } label: {
-                        Text((format == currentFormat ? "✓ " : "") + format.displayName)
+                        let isSelected = format == currentFormat
+                        HStack {
+                            if isSelected {
+                                Image(systemName: "checkmark")
+                            }
+                            Label(format.displayName, systemImage: format.iconName)
+                        }
                     }
                 }
+            } label: {
+                Label("Format: \(currentFormat.displayName)", systemImage: "doc.text")
             }
 
             Divider()
 
-            Button("Recent Captures...") {
+            Button {
                 openWindow(id: "history")
                 NSApp.activate(ignoringOtherApps: true)
+            } label: {
+                Label("Recent Captures", systemImage: "clock.arrow.circlepath")
             }
 
             Divider()
 
-            Button("Settings...") {
+            Button {
                 openWindow(id: "settings")
                 NSApp.activate(ignoringOtherApps: true)
+            } label: {
+                Label("Settings", systemImage: "gearshape")
             }
 
             Divider()
 
-            Button("Quit") {
+            Button(role: .destructive) {
                 NSApplication.shared.terminate(nil)
+            } label: {
+                Label("Quit MathCapture", systemImage: "power")
             }
         }
 
