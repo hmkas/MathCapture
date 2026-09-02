@@ -61,10 +61,6 @@ You can switch between **MathML** and **LaTeX** output in Settings or directly f
 
 - [KeyboardShortcuts](https://github.com/sindresorhus/KeyboardShortcuts) 1.15.0 — global keyboard shortcut support
 
-## AI Statement
-
-100% vibecoded. €0,02 in tokens delivers €8,99 a month in value ([Mathpix](https://mathpix.com/)).
-
 ## License
 
 MIT
