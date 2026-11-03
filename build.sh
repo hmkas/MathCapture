@@ -3,6 +3,7 @@ set -euo pipefail
 
 APP_NAME="MathCapture"
 CONFIG="${1:-debug}"
+VERSION="${2:-1.0.0}"
 
 if [ "$CONFIG" = "release" ]; then
     BUILD_DIR=".build/release"
@@ -55,9 +56,9 @@ cat > "$APP_BUNDLE/Contents/Info.plist" << EOF
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0</string>
+	<string>$VERSION</string>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>$VERSION</string>
 	<key>LSApplicationCategoryType</key>
 	<string>public.app-category.productivity</string>
 	<key>LSMinimumSystemVersion</key>
